@@ -1,0 +1,10 @@
+syntax = "proto3";
+message EmailParserRequest {
+    string email = 1;
+}
+message EmailParserResponse {
+    bool received = 1;
+}
+service EmailExchange {
+    rpc SendToParser (EmailParserRequest) returns (EmailParserResponse) {}
+}
