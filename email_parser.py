@@ -1,4 +1,5 @@
 import asyncio
+from gc import garbage
 import logging
 from posixpath import split
 import string
@@ -37,6 +38,7 @@ class EmailExchangeServicer(email_exchange_pb2_grpc.EmailExchangeServicer):
 def clean_email_headers(email_text: string) -> string:
     '''Take in full raw email text and returns email markup only'''
     email_without_headers = email_text.split("<!doctype html>")
+    
     return email_without_headers[1]
 
 
@@ -46,7 +48,7 @@ def parse_email_text(email_text: string) -> string:
     then transforms it into plain text
     '''
     soup = BeautifulSoup(email_text, 'html.parser')
-    print(f"Here's the soup: \n{soup}")
+    print(f"Here's the soup: \n{soup.get_text().strip()}")
     return "yay parsed"
 
 
