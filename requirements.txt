@@ -4,3 +4,4 @@ google-auth-oauthlib
 grpcio
 grpcio-tools
 beautifulsoup4
+pylint

@@ -6,7 +6,6 @@ from posixpath import split
 from pydoc import plain
 import string
 from typing import List, Tuple
-from email_listener import email_parser
 
 import grpc
 import email_exchange_pb2
@@ -62,7 +61,7 @@ def get_email_text(email_text: string) -> string:
     soup = BeautifulSoup(email_text, 'html.parser')
     email_text = soup.get_text()
     email_text = " ".join(email_text.split()).lower()
-    print(f"Here's the soup after stripping: \n{email_text}\n\n")
+    # print(f"Here's the soup after stripping: \n{email_text}\n\n")
     return email_text
 
 
@@ -75,18 +74,19 @@ def parse_email_text(plain_email_text: string) -> List[re.Match]:
     Returns:
         List[re.Match]: _description_
     """
-    print(plain_email_text)
+    # print(plain_email_text)
     match_list = re.finditer(REGEX_DIGITS_PATTERN, plain_email_text)
     potential_otp_list = []
     for match_entry in match_list:
         match_entry.group(0)
-        # print(match_entry)
         scored_entry = score_match_entry(match_entry, plain_email_text)
         # scored_entry[0] is an re.Match obj & scored_entry[1] is the score of the re.Match obj
+        print(scored_entry)
         if scored_entry[1] == 0:
-            pass
+            continue
         potential_otp_list.append(scored_entry)
-    # print(f"Matched numbers from RE: {}")
+    print("Matched numbers from RE:")
+    print(*potential_otp_list, sep=", ") # this prints the potential otp list with comma separator
     return potential_otp_list
 
 
@@ -106,8 +106,8 @@ def score_match_entry(match_entry: re.Match, plain_email_text: string) -> Tuple[
     # This line compares the length of the total scope with the length of the difference; yielding the matching score
     entry_score = len(scoring_scope) - \
         len(scoring_scope.difference(OTP_WORD_LIST))
-    print(scoring_scope)
-    print((match_entry, entry_score))
+    # print(scoring_scope)
+    # print((match_entry, entry_score))
     return (match_entry, entry_score)
 
 
